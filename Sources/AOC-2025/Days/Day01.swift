@@ -2,19 +2,14 @@ import Foundation
 
 struct Day01 {
     func run() {
-        let cwd = FileManager.default.currentDirectoryPath
-        let url = URL(fileURLWithPath: cwd).appendingPathComponent("Inputs/day01.txt")
-        guard let input = try? String(contentsOf: url) else {
-          print("Failed to read file")
-          return
+        if let lines = readLines(from: "day01.txt") {
+            print(part1(lines))
+            print(part2(lines))
         }
-        let lines = input.split(separator: "\n").map { String($0) }
-        print(part1(lines))
-        print(part2(lines))
     }
 
     private func part1(_ lines: [String]) -> Int {
-        var ticker = 50
+        var dial = 50
         var result = 0
 
         for line in lines {
@@ -23,14 +18,14 @@ struct Day01 {
 
             switch direction {
             case "L":
-                ticker = (ticker - steps + 100) % 100
+                dial = (dial - steps + 100) % 100
             case "R":
-                ticker = (ticker + steps) % 100
+                dial = (dial + steps) % 100
             default:
                 continue
             }
             
-            if ticker == 0 {
+            if dial == 0 {
                 result += 1
             }
         }
@@ -39,7 +34,7 @@ struct Day01 {
     }
 
     private func part2(_ lines: [String]) -> Int {
-        var ticker = 50
+        var dial = 50
         var result = 0
 
         for line in lines {
@@ -51,15 +46,15 @@ struct Day01 {
 
             switch direction {
             case "L":
-                if ticker - steps <= 0 && ticker != 0 {
+                if dial - steps <= 0 && dial != 0 {
                     result += 1
                 }
-                ticker = (ticker - steps + 100) % 100
+                dial = (dial - steps + 100) % 100
             case "R":
-                if ticker + steps > 99 {
+                if dial + steps > 99 {
                     result += 1
                 }
-                ticker = (ticker + steps) % 100
+                dial = (dial + steps) % 100
             default:
                 continue
             }
