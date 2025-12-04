@@ -5,6 +5,7 @@ struct AOC_2025 {
 
         switch day {
           case "1": Day01().run()
+          case "2": Day02().run()
           default: print("Day not implemented")
         }
     }
