@@ -15,19 +15,19 @@ struct Day03 {
             var maxLeftJoltage = 0
             var maxLeftIndex = 0
 
-            for (i, index) in line.indices.dropLast().enumerated() {
-                let joltage = Int(String(line[index])) ?? 0
-                if joltage > maxLeftJoltage {
+            for i in 0..<(line.count - 1) {
+                if let joltage = line.int(at: i), joltage > maxLeftJoltage {
                     maxLeftJoltage = joltage
                     maxLeftIndex = i
                 }
             }
 
-            let startIndex = line.index(line.startIndex, offsetBy: maxLeftIndex + 1)
             var maxRightJoltage = 0
 
-            for index in line.indices[startIndex...] {
-                maxRightJoltage = max(maxRightJoltage, Int(String(line[index])) ?? 0)
+            for i in maxLeftIndex + 1..<line.count {
+                if let joltage = line.int(at: i) {
+                    maxRightJoltage = max(maxRightJoltage, joltage)
+                }
             }
 
             result += 10 * maxLeftJoltage + maxRightJoltage
@@ -40,32 +40,25 @@ struct Day03 {
         var result = 0
         
         for line in lines {
-            var startingPoint = 0
-            var totalMaxJoltage = 0
+            var start = 0
             var digits: [Int] = []
 
             for battery in 0..<12 {
                 var maxJoltageInRemaining = 0
-                let startIndex = line.index(line.startIndex, offsetBy: startingPoint)
-                let endIndex = line.index(line.endIndex, offsetBy: -(12 - battery))
+                let slice = line[start..<(line.count - (12 - battery) + 1)]
+                var indexAtMax = start
 
-                let base = line.distance(from: line.startIndex, to: startIndex)
-                for (i, index) in line.indices[startIndex...endIndex].enumerated() {
-                    let joltage = Int(String(line[index])) ?? 0
-                    if joltage > maxJoltageInRemaining {
+                for i in 0..<slice.count {
+                    if let joltage = line.int(at: i + start), joltage > maxJoltageInRemaining {
                         maxJoltageInRemaining = joltage
-                        startingPoint = base + i + 1
+                        indexAtMax = i + start
                     }
                 }
                 digits.append(maxJoltageInRemaining)
+                start = indexAtMax + 1
             }
 
-            var multiplier = 1
-            for digit in digits.reversed() {
-                totalMaxJoltage += digit * multiplier
-                multiplier *= 10
-            }
-
+            let totalMaxJoltage = digits.reduce(0) { $0 * 10 + $1 }
             result += totalMaxJoltage
         }
 
